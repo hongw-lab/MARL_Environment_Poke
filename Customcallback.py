@@ -1,40 +1,11 @@
 from ray.rllib.algorithms.callbacks import DefaultCallbacks
-from collections import defaultdict
-import pdb
 
 
 class CustomCallbacks(DefaultCallbacks):
-    #     def on_episode_start(
-    #         self, *, worker, base_env, policies, episode, env_index, **kwargs
-    #     ):
-    # #        episode.media["episode_data"] = defaultdict(list)
-    #         #episode.user_data = {'agent1':{}, 'agent2':{}}
-
-    #     def on_episode_step(
-    #         self, *, worker, base_env, episode, env_index, **kwargs
-    #     ):
-    #         # Running metrics -> keep all values
-    #         # Final metrics -> only keep the current value
-    #         # for agent,_ in episode.user_data.items():
-    #         #     pdb.set_trace()
-    #         #     data = episode.last_info_for(agent)
-    #         #     for name, value in data.items():
-    #         #         episode.user_data[agent].append(value)
-    #         #         else:
-    #         #             data_subset[name] = value
-
-    #         # # Arbitrary episode media
-    #         # media = episode.last_info_for().get("media", {})
-    #         # for name, value in media.items():
-    #         #     episode.media["episode_data"][name].append(value)
-
     def on_episode_end(
         self, *, worker, base_env, policies, episode, env_index, **kwargs
     ):
-        # for name, value in episode.media["episode_data"].items():
-        #     episode.media["episode_data"][name] = np.array(value).tolist()
-        # pdb.set_trace()
-        # episode.custom_metrics = episode._agent_to_last_info
+
         episode.custom_metrics["nmiss1"] = episode._agent_to_last_info["agent1"][
             "nmiss"
         ]

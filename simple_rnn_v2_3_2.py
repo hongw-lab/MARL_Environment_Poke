@@ -1,27 +1,12 @@
 # RNN with one fully connected layer
 
-import pdb
-
 import numpy as np
-import gym
-from gym.spaces import Discrete, MultiDiscrete
-import tree  # pip install dm_tree
-import os
-from typing import Dict, List, Union, Tuple
-
 from ray.rllib.models.modelv2 import ModelV2
 from ray.rllib.models.preprocessors import get_preprocessor
-from ray.rllib.models.torch.misc import SlimFC
 from ray.rllib.models.torch.recurrent_net import RecurrentNetwork
-from ray.rllib.models.torch.torch_modelv2 import TorchModelV2
-from ray.rllib.policy.rnn_sequencing import add_time_dimension
-from ray.rllib.policy.sample_batch import SampleBatch
-from ray.rllib.policy.view_requirement import ViewRequirement
-from ray.rllib.utils.annotations import override, DeveloperAPI
+from ray.rllib.utils.annotations import override
 from ray.rllib.utils.framework import try_import_torch
-from ray.rllib.utils.spaces.space_utils import get_base_struct_from_space
-from ray.rllib.utils.torch_utils import flatten_inputs_to_1d_tensor, one_hot
-from ray.rllib.utils.typing import ModelConfigDict, TensorType
+
 import logging
 from typing import Callable
 
@@ -194,13 +179,6 @@ class AnotherTorchRNNModel(RecurrentNetwork, nn.Module):
 
         custom_loss = self.l2_loss + self.l2_loss_inp
 
-        # depending on input add loss
-
-        # if self.hascustomloss: #in case you want to only regularize base on a config, ...
-        #     if isinstance(policy_loss, list):
-        #         return [single_loss+custom_loss for single_loss in policy_loss]
-        #     else:
-        #         return policy_loss+custom_loss
 
         total_loss = [p_loss + custom_loss for p_loss in policy_loss]
 
@@ -209,7 +187,6 @@ class AnotherTorchRNNModel(RecurrentNetwork, nn.Module):
     def metrics(self):
         metrics = {
             "weight_loss": self.l2_loss.item(),
-            # TODO Nguyen figure out if good or not
             "original_loss": self.original_loss[0].item(),
         }
         # you can print them to command line here. with Torch models its somehow not reportet to the logger

@@ -1,9 +1,6 @@
-import generate_agent_path
-import run_simulation_xy
 import argparse
 import os
 import ray
-import importlib
 from ray import tune
 from current_config_xy import get_config
 from ray.rllib.agents.ppo import PPOTrainer
@@ -13,7 +10,6 @@ from MultiAgentSync_fullobs_samefield_randnose_xycoords import (
     MultiAgentSync_noobs,
     MultiAgentSing_noobs,
 )
-from PIL import Image, ImageDraw, ImageFont
 import imageio
 import numpy as np
 

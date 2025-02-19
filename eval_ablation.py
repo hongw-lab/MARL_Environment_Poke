@@ -1,9 +1,7 @@
 # ablate certain neurons and test its effect on agent behavior
-from run_simulation_xy import run_simulation
 import argparse
 import os
 import ray
-import importlib
 from ray import tune
 from current_config_xy import get_config
 from ray.rllib.agents.ppo import PPOTrainer

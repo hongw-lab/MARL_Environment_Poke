@@ -4,8 +4,6 @@ from MultiAgentSync_fullobs_samefield_randnose_xycoords import (
     MultiAgentSync_noobs,
     MultiAgentSing_noobs,
 )
-from ray.rllib.examples.models.rnn_model import RNNModel, TorchRNNModel
-from ray.rllib.utils.test_utils import check_learning_achieved
 from ray.rllib.models import ModelCatalog
 from ray.rllib.agents.ppo import PPOTorchPolicy
 from Customcallback import CustomCallbacks
