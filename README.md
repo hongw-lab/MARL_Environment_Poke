@@ -1,7 +1,7 @@
 # Cooperative Poking Task with MARL
 This project models social cooperation under the multi-agent reinforcement learning (MARL) framework. The environment consists of two agents moving on opposite sides of an arena. They receive rewards for coordinating a nose-poke action—this occurs when both agents enter a designated nose-poke location within a 2-step window. Upon successfully cooperating, they can access a water location to earn additional rewards.
 
-![alt text](image.png)
+![alt text](assets/image.png)
 
 ## Training
 
