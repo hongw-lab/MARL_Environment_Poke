@@ -124,7 +124,7 @@ if __name__ == "__main__":
         max_progress_rows=10, max_report_frequency=300, infer_limit=8
     )
     reporter.add_metric_column("policy_reward_mean")
-
+    print(args.output_dir)
     # Run training
     analysis = tune.run(
         PPOTrainer,
@@ -138,7 +138,8 @@ if __name__ == "__main__":
         local_dir=args.output_dir,
         verbose=1,
         restore=restore_path,
-        resume=True if args.resume == "True" else False,
+        name=None if args.resume == "False" else args.resume,
+        resume=False if args.resume == "False" else True,
     )
 
     # Find best result - the dir here can be used for the next training stage

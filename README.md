@@ -1,21 +1,7 @@
 # Cooperative Poking Task with MARL
 This project models social cooperation under the multi-agent reinforcement learning (MARL) framework. The environment consists of two agents moving on opposite sides of an arena. They receive rewards for coordinating a nose-poke action—this occurs when both agents enter a designated nose-poke location within a 2-step window. Upon successfully cooperating, they can access a water location to earn additional rewards.
 
-![alt text](assets/image.png)
-
-## Environment Setup
-
-1. Create a virtual environment
-```bash
-# Create a new virtual environment
-python3.10 -m venv venv # The requirments are tested on python 3.10
-# Activate the virtual environment (on Linux):
-source venv/bin/activate
-```
-2. Install the required packages, before running this make sure your virtual environment is activated, you should see (venv) at the beginning of your terminal prompt.
-```bash
-pip install -r requirements.txt
-```
+![alt text](image.png)
 
 ## Training
 
@@ -37,11 +23,19 @@ bash train.sh non_coop results/non_coop
 ### Cooperative phase
 The cooperative training phase builds on agents trained in the non-cooperative phase. Use the following command:
 ```
-bash train.sh coop results/coop results/non_coop
+bash train.sh coop results/coop False results/non_coop
 ```
 * First argument: `"coop"` (specifies cooperative training)
 * Second argument: Output directory for training results
-* Third argument: Path to the non-cooperative training directory (the highest-performing checkpoint will be loaded)
+* Third argument: `False` (specifies if there is an existing training experiment to be resumed)
+* Forth argument: Path to the non-cooperative training directory (the highest-performing checkpoint will be loaded)
+
+**Note**: to resume a training experiment that has been stopped pre-maturely, set the third argument to the name of the training folder (by default, this is the date and time that the training experiment started).
+
+```
+bash train.sh coop results/coop PPO_2025-02-20_21-29-42 results/non-coop
+```
+
 ## Evaluation
 
 Evaluate agents' performance in the following ways
