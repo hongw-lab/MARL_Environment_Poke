@@ -1,4 +1,3 @@
-from run_simulation_xy import run_simulation
 import argparse
 import os
 import ray
@@ -96,6 +95,111 @@ def get_args():
     print("Running trails with the following arguments: ", args)
     return args
 
+def run_simulation(
+    env,
+    model,
+    rem_partner_loc_ag1=False,
+    rem_partner_loc_ag2=False,
+    rem_partner_np_ag1=False,
+    rem_partner_np_ag2=False,
+):
+    tot_reward = np.zeros(2)
+    actions1 = list()
+    actions2 = list()
+    pos1x = list()
+    pos2x = list()
+    pos1y = list()
+    pos2y = list()
+    pk1x = list()
+    pk2x = list()
+    pk1y = list()
+    pk2y = list()
+    miss = list()
+    correct = list()
+    poke1 = list()
+    poke2 = list()
+    drink1 = list()
+    drink2 = list()
+    t = -1
+
+    obs = env.reset()
+    state1 = [np.zeros(256, np.float32) for _ in range(2)]
+    state2 = [np.zeros(256, np.float32) for _ in range(2)]
+    while True:
+        t += 1
+        if rem_partner_loc_ag1:
+            obs["agent1"]["otheragent0"] = 0
+            obs["agent1"]["otheragent1"] = 0
+        if rem_partner_loc_ag2:
+            obs["agent2"]["otheragent0"] = 0
+            obs["agent2"]["otheragent1"] = 0
+        if rem_partner_np_ag1:
+            obs["agent1"]["otherpoke0"] = 0
+            obs["agent1"]["otherpoke1"] = 0
+        if rem_partner_np_ag2:
+            obs["agent2"]["otherpoke0"] = 0
+            obs["agent2"]["otherpoke1"] = 0
+        a1, state1, _ = model.compute_single_action(
+            observation=obs["agent1"], state=state1, policy_id="policy1"
+        )
+        a2, state2, _ = model.compute_single_action(
+            observation=obs["agent2"], state=state2, policy_id="policy2"
+        )
+        obs, rewards, dones, _ = env.step({"agent1": a1, "agent2": a2})
+        actions1.append(a1)
+        actions2.append(a2)
+        pos1y.append(env.agent1_pos[0])
+        pos2y.append(env.agent2_pos[0])
+        pos1x.append(env.agent1_pos[1])
+        pos2x.append(env.agent2_pos[1])
+        pk1y.append(env.poke_coords1[0])
+        pk2y.append(env.poke_coords2[0])
+        pk1x.append(env.poke_coords1[1])
+        pk2x.append(env.poke_coords2[1])
+        tot_reward[0] = tot_reward[0] + rewards["agent1"]
+        tot_reward[1] = tot_reward[1] + rewards["agent2"]
+        if env.miss == 1:
+            miss.append(t)
+        if env.sync_poke == 1:
+            correct.append(t)
+        if "poke" in env.events["agent1"]:
+            poke1.append(t)
+        if "poke" in env.events["agent2"]:
+            poke2.append(t)
+        if "drink" in env.events["agent1"]:
+            drink1.append(t)
+        if "drink" in env.events["agent2"]:
+            drink2.append(t)
+        if dones["agent1"]:
+            break
+
+    return (
+        {
+            "ncorrect": env.ncorrect,
+            "nmiss1": env.nmiss1,
+            "nmiss2": env.nmiss2,
+            "ncorrect1": env.ncorrect1,
+            "ncorrect2": env.ncorrect2,
+            "npoke1": env.npoke1,
+            "npoke2": env.npoke2,
+            "ndrink1": env.ndrink1,
+            "ndrink2": env.ndrink2,
+        },
+        {"correct": correct, "miss": miss},
+        {"poke1": poke1, "poke2": poke2, "drink1": drink1, "drink2": drink2},
+        {"ag1": tot_reward[0], "ag2": tot_reward[1]},
+        {"ag1": actions1, "ag2": actions2},
+        {
+            "ag1x": pos1x,
+            "ag2x": pos2x,
+            "ag1y": pos1y,
+            "ag2y": pos2y,
+            "poke1x": pk1x,
+            "poke2x": pk2x,
+            "poke1y": pk1y,
+            "poke2y": pk2y,
+        },
+    )
 
 def roll_out_events(checkpoint_dir, env, step, config, save_path):
     analysis = tune.ExperimentAnalysis(os.path.abspath(checkpoint_dir))

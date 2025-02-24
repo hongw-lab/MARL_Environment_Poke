@@ -3,7 +3,7 @@ import random
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 from ray.rllib.env.multi_agent_env import MultiAgentEnv
-from gym.spaces import Discrete, MultiDiscrete, Box, MultiBinary, Dict
+from gym.spaces import Discrete, Dict
 
 
 ### coop task ###
