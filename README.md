@@ -16,6 +16,8 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+**Note**: Ray version 2.2 may have compatibility issues on macOS. To avoid potential issues, consider using Linux or Windows, or manually compiling Ray before setting up your environment.
+
 
 ## Training
 
